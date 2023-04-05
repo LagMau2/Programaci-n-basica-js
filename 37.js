@@ -1,30 +1,44 @@
+const readline = require('readline');
 
-const M = 5;
-const N = 4;
-let matriz = [];
-for (let i = 0; i < M; i++) {
-  matriz[i] = [];
-  for (let j = 0; j < N; j++) {
-    matriz[i][j] = Math.floor(Math.random() * 100) + 1;
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+const alumnos = [];
+
+rl.question('Ingrese el número de alumnos: ', (numAlumnos) => {
+  for (let i = 0; i < numAlumnos; i++) {
+    const alumno = {};
+    alumno.nombre = '';
+    alumno.materias = [];
+
+    rl.question(`Ingrese el nombre del alumno ${i+1}: `, (nombre) => {
+      alumno.nombre = nombre;
+
+      rl.question(`Ingrese el número de materias que lleva el alumno ${alumno.nombre}: `, (numMaterias) => {
+        for (let j = 0; j < numMaterias; j++) {
+          const materia = {};
+
+          rl.question(`Ingrese el nombre de la materia ${j+1} del alumno ${alumno.nombre}: `, (nombreMateria) => {
+            materia.nombre = nombreMateria;
+
+            rl.question(`Ingrese la calificación de la materia ${materia.nombre} del alumno ${alumno.nombre}: `, (calificacion) => {
+              materia.calificacion = parseFloat(calificacion);
+              alumno.materias.push(materia);
+
+              if (alumno.materias.length === numMaterias) {
+                alumnos.push(alumno);
+                if (alumnos.length === numAlumnos) {
+                  console.log('Alumnos y calificaciones:');
+                  console.log(alumnos);
+                  rl.close();
+                }
+              }
+            });
+          });
+        }
+      });
+    });
   }
-}
-
-console.log("Matriz original:");
-console.table(matriz);
-
-let incremento = Math.floor(M / 2);
-while (incremento > 0) {
-  for (let i = incremento; i < M; i++) {
-    let j = i;
-    let temp = matriz[i];
-    while (j >= incremento && matriz[j - incremento][0] > temp[0]) {
-      matriz[j] = matriz[j - incremento];
-      j -= incremento;
-    }
-    matriz[j] = temp;
-  }
-  incremento = Math.floor(incremento / 2);
-}
-
-console.log("Matriz ordenada:");
-console.table(matriz);
+});
